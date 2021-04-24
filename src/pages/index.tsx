@@ -1,28 +1,109 @@
 import { GetStaticProps } from "next";
 import { api } from "../services/axios";
+import Image from 'next/image';
+import Link from 'next/link'
 import {format,parseISO} from 'date-fns';
 import { ptBR } from "date-fns/locale";
+import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
+import style from './home.module.scss'
 
 interface Episodios{
   id:string,
   title:string,
-  members:string
+  members:string,
+  thumbnail:string,
+  description:string,
+  publishedAt:string,
+  duration:number,
+  durationAsString:string,
+  url:string
 }
 
 interface propsHome{
-  episodios:Array<Episodios>
+  todosEp:Array<Episodios>,
+  ultimosEp:Array<Episodios>,
 
 }
 
 export default function Home(props:propsHome) {
 
-  console.log(props.episodios[0].members)
-
   return (
-    <>
-      <h1>index page</h1>
-      <p>{JSON.stringify(props.episodios)}</p>
-    </>
+    <div className={style.homepage}>
+      <section className = {style.latestEpisodes}>
+        <h2>Ultimos lançamentos</h2>
+
+        <ul>
+          {props.ultimosEp.map(episode => (
+            <li key={episode.id}>
+              <Image 
+                width={192}
+                height={192}
+                src={episode.thumbnail} 
+                alt={episode.title}
+                objectFit="cover"
+              />
+
+              <div className={style.episodeDetails}>
+                
+                  <a>{episode.title}</a>
+                
+                <p>{episode.members}</p>
+                <span>{episode.publishedAt}</span>
+                <span>{episode.durationAsString}</span>
+              </div>
+
+              <button>
+                <img src="/play-green.svg" alt="Tocar episódio"/>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+      </section>
+      <section className={style.allEpisodes}>
+        <h2>Todos episódios</h2>
+        <table cellSpacing={0}>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Podcast</th>
+                <th>Integrantes</th>
+                <th>Duração</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {props.todosEp.map((episode, index) => (
+                <tr key={episode.id}>
+                  <td style={{ width: 72 }}>
+                    <Image 
+                      width={120}
+                      height={120}
+                      src={episode.thumbnail} 
+                      alt={episode.title}
+                      objectFit="cover"
+                    />
+                  </td>
+                  <td>
+                    <Link href={`/episodes/${episode.id}`} passHref>
+                      <a href={`/episodes/${episode.id}`}>{episode.title}</a>
+                    </Link>
+                  </td>
+                  <td>{episode.members}</td>
+                  <td style={{ width: 100 }}>{episode.publishedAt}</td>
+                  <td>{episode.durationAsString}</td>
+                  <td>
+                    <button type="button">
+                      <img src="/play-green.svg" alt="Tocar episódio" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+        </table>
+      </section>
+    </div>
   )
 }
 
@@ -45,14 +126,19 @@ export const getStaticProps:GetStaticProps = async ()=>{
         description:episode.description,
         publishedAt:format(parseISO(episode.published_at), 'd MMM yy',{locale:ptBR}),
         duration:Number(episode.file.duration),
-        url:episode.url
+        durationAsString:convertDurationToTimeString(Number(episode.file.duration)),
+        url:episode.file.url
     }
     
   })
 
+  const ultimosEp = episodios.slice(0,2)
+  const todosEp = episodios.slice(2,episodios.length)
+
   return{
     props:{
-      episodios: data
+      ultimosEp,
+      todosEp
     },
 
     revalidate:60  //aqui define quanto tempo deve ser feita a requisição em getStaticProps
