@@ -1,5 +1,5 @@
 
-import {createContext, useState} from 'react';
+import {createContext, ReactNode, useState} from 'react';
 
 
 interface Episode{
@@ -21,12 +21,16 @@ interface PlayerContextData{
 
 export const PlayerContext = createContext({} as PlayerContextData);
 
-export function PlayerContextProvider({children}){
+interface PlayerChildrenProvider{
+  children:ReactNode
+}
+
+export function PlayerContextProvider({children}:PlayerChildrenProvider){
   const [listPoadcast,setListPoadcast] = useState([])
   const [currentEpisodeIndex,setCurrentEpisodeIndex] = useState(0);
   const [isPlaying,setIsPlaying] = useState(false)
 
-  function play(episode){
+  function play(episode:Episode){
     setListPoadcast([episode]),
     setCurrentEpisodeIndex(0),
     togglePlay()
