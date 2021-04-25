@@ -6,6 +6,8 @@ import {format,parseISO} from 'date-fns';
 import { ptBR } from "date-fns/locale";
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
 import style from './home.module.scss'
+import { useContext } from "react";
+import { PlayerContext } from "./contexts/playerContext";
 
 interface Episodios{
   id:string,
@@ -26,6 +28,8 @@ interface propsHome{
 }
 
 export default function Home(props:propsHome) {
+
+  const player= useContext(PlayerContext)
 
   return (
     <div className={style.homepage}>
@@ -54,7 +58,7 @@ export default function Home(props:propsHome) {
                 <span>{episode.durationAsString}</span>
               </div>
 
-              <button>
+              <button onClick={()=>{player.play(episode)}}>
                 <img src="/play-green.svg" alt="Tocar episódio"/>
               </button>
             </li>
