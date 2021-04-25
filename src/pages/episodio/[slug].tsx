@@ -27,9 +27,9 @@ interface propsEpisode{
 
 export default function Episode(props:propsEpisode){
 
-    const router = useRouter()
+    //const router = useRouter()
 
-    console.log(router.query.slug)
+    //console.log(router.query.slug)
     
     return(
         <div className={styles.episode}>
@@ -65,9 +65,32 @@ export default function Episode(props:propsEpisode){
 
 
 export const getStaticPaths:GetStaticPaths = async () =>{
+
+    const {data} = await api.get('episodes',{
+        params:{
+          _limit:2,
+          _sort:"published_at",
+          _order:"desc"
+        }
+      });
+
+      const paths = data.map(ep=>{
+          return{
+            params:{
+                slug:ep.id
+            }
+          }
+      })
+
     return{
-        paths:[],
-        fallback:'blocking'
+        paths,
+        fallback:'blocking' 
+        //será processado no node do next.js e depois vai ser exibido
+        //se for true ele faz a requisição porem no client
+        // if(router.isFallback){
+        //     return(<p>Carregando...</p>)
+        // }
+        //false quando ele acessar uma pagina que não foi buildada ele daria 404
     }
 }
 
