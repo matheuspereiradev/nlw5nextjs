@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import { api } from "../services/axios";
 import Image from 'next/image';
-import Link from 'next/link'
+import Link from 'next/link';
 import {format,parseISO} from 'date-fns';
 import { ptBR } from "date-fns/locale";
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
@@ -44,8 +44,10 @@ export default function Home(props:propsHome) {
               />
 
               <div className={style.episodeDetails}>
-                
+                <Link href={`/episodio/${episode.id}`}>
                   <a>{episode.title}</a>
+                </Link>
+                  
                 
                 <p>{episode.members}</p>
                 <span>{episode.publishedAt}</span>
@@ -86,8 +88,8 @@ export default function Home(props:propsHome) {
                     />
                   </td>
                   <td>
-                    <Link href={`/episodes/${episode.id}`} passHref>
-                      <a href={`/episodes/${episode.id}`}>{episode.title}</a>
+                    <Link href={`/episodio/${episode.id}`} passHref>
+                      <a href={`/episodio/${episode.id}`}>{episode.title}</a>
                     </Link>
                   </td>
                   <td>{episode.members}</td>
