@@ -8,7 +8,7 @@ import 'rc-slider/assets/index.css'
 
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
-  const {currentEpisodeIndex,listPoadcast,isPlaying,togglePlay,setPlayState}= useContext(PlayerContext)
+  const {currentEpisodeIndex,listPoadcast,isPlaying,togglePlay,setPlayState,playNext,playPrevious}= useContext(PlayerContext)
   const episode = listPoadcast[currentEpisodeIndex]
   useEffect(()=>{
     if(!audioRef.current){
@@ -79,7 +79,7 @@ export function Player() {
             <button type="button" disabled={!episode}>
                 <img src="/shuffle.svg" alt="aleatório"/>
             </button>
-            <button type="button" disabled={!episode}>
+            <button type="button" onClick={()=>{playPrevious()}} disabled={!episode}>
                 <img src="/play-previous.svg" alt="tocar anterior"/>
             </button>
             <button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
@@ -88,7 +88,7 @@ export function Player() {
                   : <img src="/play.svg" alt="Tocar"/>
                 }
             </button>
-            <button type="button" disabled={!episode}>
+            <button type="button" onClick={()=>{playNext()}} disabled={!episode}>
                 <img src="/play-next.svg" alt="tocar próxima"/>
             </button>
             <button type="button" disabled={!episode}>

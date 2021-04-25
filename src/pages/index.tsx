@@ -29,7 +29,9 @@ interface propsHome{
 
 export default function Home(props:propsHome) {
 
-  const player= useContext(PlayerContext)
+  const {setPlayList}= useContext(PlayerContext);
+
+  const allEpisodes = [...props.ultimosEp,...props.todosEp ]
 
   return (
     <div className={style.homepage}>
@@ -37,7 +39,7 @@ export default function Home(props:propsHome) {
         <h2>Ultimos lançamentos</h2>
 
         <ul>
-          {props.ultimosEp.map(episode => (
+          {props.ultimosEp.map((episode,index) => (
             <li key={episode.id}>
               <Image 
                 width={192}
@@ -58,7 +60,7 @@ export default function Home(props:propsHome) {
                 <span>{episode.durationAsString}</span>
               </div>
 
-              <button onClick={()=>{player.play(episode)}}>
+              <button onClick={()=>{setPlayList(allEpisodes,index)}}>
                 <img src="/play-green.svg" alt="Tocar episódio"/>
               </button>
             </li>
@@ -100,7 +102,7 @@ export default function Home(props:propsHome) {
                   <td style={{ width: 100 }}>{episode.publishedAt}</td>
                   <td>{episode.durationAsString}</td>
                   <td>
-                    <button type="button">
+                    <button type="button" onClick={()=>{setPlayList(allEpisodes,index+props.ultimosEp.length)}}>
                       <img src="/play-green.svg" alt="Tocar episódio" />
                     </button>
                   </td>
