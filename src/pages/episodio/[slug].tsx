@@ -1,12 +1,13 @@
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import {useRouter} from 'next/router' 
 import { api } from '../../services/axios';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './episode.module.scss'
+import { useContext } from 'react';
+import { PlayerContext } from '../contexts/playerContext';
 
 interface Episodio{
     id:string,
@@ -27,10 +28,8 @@ interface propsEpisode{
 
 export default function Episode(props:propsEpisode){
 
-    //const router = useRouter()
+    const {play}=useContext(PlayerContext)
 
-    //console.log(router.query.slug)
-    
     return(
         <div className={styles.episode}>
         <div className={styles.thumbnailContainer}>
@@ -45,7 +44,7 @@ export default function Episode(props:propsEpisode){
             src={props.episodio.thumbnail}
             objectFit="cover"
           />
-          <button type="button">
+          <button type="button" onClick={()=>{play(props.episodio)}}>
             <img src="/play.svg" alt="Tocar episódio"/>
           </button>
         </div>
